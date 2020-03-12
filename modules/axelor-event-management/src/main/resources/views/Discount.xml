@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+  http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+  <grid model="com.axelor.apps.event.management.db.Discount" title="Discount" name="discount-grid">
+    <field name="beforeDays" />
+    <field name="discountPercent" />
+    <field name="discountAmount" />
+  </grid>
+
+  <form model="com.axelor.apps.event.management.db.Discount" title="Discount" name="discount-form">
+    <panel colSpan="12">
+      <field name="beforeDays" onChange="action-event-management-validate-check-exceedance-by-registration-peroid" />
+      <field name="discountPercent" onChange="action-event-management-attrs-calculate-discount-amount"/>
+      <field name="discountAmount" />
+    </panel>
+  </form>
+
+  <action-validate name="action-event-management-validate-check-exceedance-by-registration-peroid">
+    <error message="Before days are exceeded of days of registration period" if="java.time.temporal.ChronoUnit.DAYS.between(__parent__.registrationOpenDate, __parent__.registrationCloseDate) &lt; beforeDays" action="action-event-management-attrs-clear-before-days"/>
+    <error message="Before days could not be less than 0." if="beforeDays &lt; 0" action="action-event-management-attrs-clear-before-days"/>
+  </action-validate>
+
+  <action-attrs name="action-event-management-attrs-clear-before-days">
+    <attribute name="value" for="beforeDays" expr="0"/>
+  </action-attrs>
+
+  <action-attrs name="action-event-management-attrs-calculate-discount-amount">
+    <attribute name="value" for="discountAmount" expr="eval: __parent__.eventFees.multiply(__this__.discountPercent).divide(100)"/>
+  </action-attrs>
+
+</object-views>

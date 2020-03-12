@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+  http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
+
+  <grid model="com.axelor.apps.event.management.db.EventRegistration" title="Event Registration" name="forevent-event-registration-grid">
+    <field name="name" />
+    <field name="email" />
+    <field name="address" />
+    <field name="registrationDateT" />
+    <field name="amount" />
+  </grid>
+
+  <grid model="com.axelor.apps.event.management.db.EventRegistration" title="Event Registration" name="event-registration-grid">
+    <field name="event" />
+    <field name="name" />
+    <field name="email" />
+    <field name="address" />
+    <field name="registrationDateT" />
+    <field name="amount" />
+  </grid>
+
+  <form model="com.axelor.apps.event.management.db.EventRegistration" title="Event Registration" name="forevent-event-registration-form" onNew="action-event-management-validation-by-parent-data">
+    <panel colSpan="12">
+      <field name="name" />
+      <field name="email" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$" />
+      <field name="address" />
+      <field name="registrationDateT" />
+      <field name="amount" />
+    </panel>
+  </form>
+
+  <form model="com.axelor.apps.event.management.db.EventRegistration" title="Event Registration" name="event-registration-form">
+    <panel colSpan="12">
+      <field name="event" />
+      <field name="name" />
+      <field name="email" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$" />
+      <field name="address" />
+      <field name="registrationDateT" />
+      <field name="amount" />
+    </panel>
+  </form>
+
+  <action-validate name="action-event-management-validation-by-parent-data">
+    <error message="Please enter capacity first" if="__parent__.capacity == 0" action="action-event-management-method-not-allow-to-save"/>
+    <error message="Please enter registration open and close date" if="__parent__.registrationCloseDate == null || __parent__.registrationOpenDate == null" action="action-event-management-method-not-allow-to-save"/>
+    <error message="Total number of registration is exceeds capacity of the event" if="__parent__.capacity &lt; __parent__.eventRegistrationList.size() || __parent__.capacity == __parent__.eventRegistrationList.size()" action="action-event-management-method-not-allow-to-save" />
+    <error message="Registration is not opened yet" if="__parent__.registrationOpenDate &gt; __date__ " action="action-event-management-method-not-allow-to-save"/>
+    <error message="Registration is closed" if="__parent__.registrationCloseDate &lt; __date__ || __parent__.registrationCloseDate == __date__" action="action-event-management-method-not-allow-to-save"/>
+  </action-validate>
+
+  <action-method name="action-event-management-method-not-allow-to-save">
+    <call class="com.axelor.apps.event.management.web.EventRegistrationController" method="closeForm" />
+  </action-method>
+
+</object-views>
