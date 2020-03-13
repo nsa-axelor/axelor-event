@@ -42,4 +42,7 @@ allprojects {
 dependencies {
   // add module dependencies
   compile project(":modules:axelor-event-management")
+  compile project(":modules:axelor-message")
+  compile project(":modules:axelor-tool")
+  compile project(":modules:axelor-exception")
 }

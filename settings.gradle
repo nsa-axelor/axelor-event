@@ -1,2 +1,5 @@
 rootProject.name = 'axelor-practical'
 include 'modules:axelor-event-management'
+include 'modules:axelor-message'
+include 'modules:axelor-tool'
+include 'modules:axelor-exception'
