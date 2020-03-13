@@ -20,7 +20,8 @@
 	<form model="com.axelor.apps.event.management.db.Event" title="Event" name="event-form" onLoad="action-event-management-record-count-entry">
 		<toolbar>
 			<button name="sendEmailBtn" title="Send Email" icon="fa-rocket" onClick="action-event-management-method-send-mail" />
-			<button name="printBtn" title="Print" icon="fa-print" onClick="action-event-management-report-generate-event-report"/>
+			<button name="printBtn" title="Print" icon="fa-print" onClick="action-event-management-report-generate-event-report" />
+			<button name="importDataBtn" title="Import Registration" onClick="action-action-event-management-view-import-open-wizard" />
 		</toolbar>
 		<panel colSpan="12">
 			<field name="reference" />
@@ -41,6 +42,22 @@
 			<field name="totalDiscount" />
 		</panel>
 	</form>
+
+	<form model="com.axelor.apps.event.management.db.Event" title="Upload File" name="upload-file-form">
+		<panel colSpan="12">
+			<field name="fileUpload" widget="binary-link" type="many-to-one" x-target="com.axelor.meta.db.MetaFile" title="Upload File"/>
+			<button name="importBtn" title="Import" />
+		</panel>
+	</form>
+
+	<action-view name="action-action-event-management-view-import-open-wizard" model="com.axelor.apps.event.management.db.Event" title="Import File">
+		<view type="form" name="upload-file-form" />
+		<view-param name="popup" value="reload" />
+		<view-param name="show-toolbar" value="false" />
+		<view-param name="show-confirm" value="false" />
+		<view-param name="popup-save" value="true" />
+		<view-param name="forceEdit" value="true" />
+	</action-view>
 
 	<action-method name="action-event-management-method-send-mail">
 		<call class="com.axelor.apps.event.management.web.EventController" method="sendMail" />
