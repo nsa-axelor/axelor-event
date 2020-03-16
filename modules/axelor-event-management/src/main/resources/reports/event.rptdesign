@@ -25,9 +25,6 @@
             <property name="isRequired">true</property>
             <property name="dataType">decimal</property>
             <property name="distinct">true</property>
-            <simple-property-list name="defaultValue">
-                <value type="constant">1</value>
-            </simple-property-list>
             <list-property name="selectionList"/>
             <property name="paramType">simple</property>
             <property name="concealValue">false</property>
@@ -992,6 +989,12 @@ where management_event.id = ?]]></xml-property>
                     <text-property name="displayName">reg_address</text-property>
                     <text-property name="heading">reg_address</text-property>
                 </structure>
+                <structure>
+                    <property name="columnName">total_amount</property>
+                    <property name="analysis">measure</property>
+                    <text-property name="displayName">total_amount</text-property>
+                    <text-property name="heading">total_amount</text-property>
+                </structure>
             </list-property>
             <list-property name="parameters">
                 <structure>
@@ -1086,6 +1089,11 @@ where management_event.id = ?]]></xml-property>
                         <property name="position">16</property>
                         <property name="name">reg_address</property>
                         <property name="dataType">string</property>
+                    </structure>
+                    <structure>
+                        <property name="position">17</property>
+                        <property name="name">total_amount</property>
+                        <property name="dataType">decimal</property>
                     </structure>
                 </list-property>
             </structure>
@@ -1187,12 +1195,20 @@ where management_event.id = ?]]></xml-property>
                     <property name="nativeName">reg_address</property>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="position">17</property>
+                    <property name="name">total_amount</property>
+                    <property name="nativeName">total_amount</property>
+                    <property name="dataType">decimal</property>
+                </structure>
             </list-property>
-            <xml-property name="queryText"><![CDATA[select management_event_registration.*, management_address.full_name as reg_address
+            <xml-property name="queryText"><![CDATA[select management_event_registration.*, 
+		management_address.full_name as reg_address, 
+		sum(management_event_registration.amount) over () as total_amount
 from management_event_registration
-inner join management_event
+left join management_event
 on management_event_registration.event = management_event.id
-inner join management_address
+left join management_address
 on management_event_registration.address = management_address.id
 where management_event.id = ?;]]></xml-property>
         </oda-data-set>
@@ -2166,6 +2182,12 @@ Description:
                     <expression name="expression" type="javascript">dataSetRow["reg_address"]</expression>
                     <property name="dataType">string</property>
                 </structure>
+                <structure>
+                    <property name="name">total_amount</property>
+                    <text-property name="displayName">total_amount</text-property>
+                    <expression name="expression" type="javascript">dataSetRow["total_amount"]</expression>
+                    <property name="dataType">decimal</property>
+                </structure>
             </list-property>
             <column id="67">
                 <property name="width">1.2167832167832169in</property>
@@ -2186,31 +2208,44 @@ Description:
                     <property name="borderBottomStyle">solid</property>
                     <property name="borderBottomWidth">medium</property>
                     <cell id="40">
-                        <label id="41">
-                            <property name="fontSize">14pt</property>
-                            <text-property name="text">amount</text-property>
-                        </label>
+                        <text id="87">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B>
+Amount
+</B>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="42">
-                        <label id="43">
-                            <property name="fontSize">14pt</property>
-                            <text-property name="text">email</text-property>
-                        </label>
+                        <text id="88">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B>
+Email
+</B>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="44">
-                        <label id="45">
-                            <text-property name="text">name</text-property>
-                        </label>
+                        <text id="90">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B>
+Name
+</B>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="46">
-                        <label id="47">
-                            <text-property name="text">registration_datet</text-property>
-                        </label>
+                        <text id="91">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B>
+Registration Date
+</B>]]></text-property>
+                        </text>
                     </cell>
                     <cell id="48">
-                        <label id="49">
-                            <text-property name="text">address</text-property>
-                        </label>
+                        <text id="92">
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B>
+Address
+</B>]]></text-property>
+                        </text>
                     </cell>
                 </row>
             </header>
@@ -2251,7 +2286,15 @@ Description:
             </detail>
             <footer>
                 <row id="61">
-                    <cell id="62"/>
+                    <cell id="62">
+                        <text id="93">
+                            <property name="fontSize">12pt</property>
+                            <property name="contentType">html</property>
+                            <text-property name="content"><![CDATA[<B>
+Total: <VALUE-OF>row["total_amount"]</VALUE-OF>
+</B>]]></text-property>
+                        </text>
+                    </cell>
                     <cell id="63"/>
                     <cell id="64"/>
                     <cell id="65"/>

@@ -19,9 +19,9 @@
 
 	<form model="com.axelor.apps.event.management.db.Event" title="Event" name="event-form" onLoad="action-event-management-record-count-entry">
 		<toolbar>
-			<button name="sendEmailBtn" title="Send Email" icon="fa-rocket" onClick="action-event-management-method-send-mail" />
-			<button name="printBtn" title="Print" icon="fa-print" onClick="action-event-management-report-generate-event-report" />
-			<button name="importDataBtn" title="Import Registration" onClick="action-action-event-management-view-import-open-wizard" />
+			<button name="sendEmailBtn" title="Send Email" icon="fa-rocket" onClick="save,action-event-management-method-send-mail" />
+			<button name="printBtn" title="Print" icon="fa-print" onClick="save,action-event-management-report-generate-event-report" />
+			<button name="importDataBtn" title="Import Registration" onClick="action-action-event-management-view-import-open-wizard" readonlyIf="id == null" />
 		</toolbar>
 		<panel colSpan="12">
 			<field name="reference" />
@@ -33,10 +33,13 @@
 			<field name="registrationOpenDate" onChange="action-event-management-validate-onchange-registration-open-date" />
 			<field name="registrationCloseDate" onChange="action-event-management-validate-onchange-registration-close-date" />
 			<field name="capacity" />
-			<field name="eventFees" />
+			<field name="eventFees" onChange="action-event-management-method-set-discount-values"/>
 			<field name="description" widget="html" colSpan="12" />
 			<field name="discountList" colSpan="12" onChange="save" />
-			<field name="eventRegistrationList" colSpan="12" onSelect="action-event-management-validate-event-registration" form-view="forevent-event-registration-form" grid-view="forevent-event-registration-grid" onChange="action-event-management-group-count-entry" />
+			<field name="eventRegistrationList" colSpan="12" form-view="forevent-event-registration-form" grid-view="forevent-event-registration-grid" onChange="action-event-management-group-count-entry" />
+			
+		</panel>
+		<panel sidebar="true">
 			<field name="totalEntry" colSpan="12" />
 			<field name="amountCollected" />
 			<field name="totalDiscount" />
@@ -46,9 +49,13 @@
 	<form model="com.axelor.apps.event.management.db.Event" title="Upload File" name="upload-file-form">
 		<panel colSpan="12">
 			<field name="fileUpload" widget="binary-link" type="many-to-one" x-target="com.axelor.meta.db.MetaFile" title="Upload File"/>
-			<button name="importBtn" title="Import" />
+			<button name="importBtn" title="Import" onClick="action-event-management-method-import-data"/>
 		</panel>
 	</form>
+	
+	<action-method name="action-event-management-method-set-discount-values">
+		<call class="com.axelor.apps.event.management.web.EventController" method="setDiscounts"/>
+	</action-method>
 
 	<action-view name="action-action-event-management-view-import-open-wizard" model="com.axelor.apps.event.management.db.Event" title="Import File">
 		<view type="form" name="upload-file-form" />
@@ -58,6 +65,10 @@
 		<view-param name="popup-save" value="true" />
 		<view-param name="forceEdit" value="true" />
 	</action-view>
+	
+	<action-method name="action-event-management-method-import-data">
+		<call class="com.axelor.apps.event.management.web.EventController" method="importData"/>
+	</action-method>
 
 	<action-method name="action-event-management-method-send-mail">
 		<call class="com.axelor.apps.event.management.web.EventController" method="sendMail" />
@@ -87,6 +98,7 @@
 
 	<action-validate name="action-event-management-validate-onchange-registration-open-date">
 		<error message="Registration open date should not be ahed of close date" if="__this__.registrationOpenDate &gt; __this__.registrationCloseDate &amp;&amp; __this__.registrationCloseDate != null" action="action-event-management-attrs-clear-registration-open-date-field" />
+		<error message="Registration open date should be behind of event start date" if="!(__this__.startDateT.toLocalDate() &gt; __this__.registrationOpenDate) &amp;&amp; __this__.startDateT != null" action="action-event-management-attrs-clear-registration-open-date-field" />
 	</action-validate>
 
 	<action-attrs name="action-event-management-attrs-clear-registration-open-date-field">
@@ -97,9 +109,9 @@
 		<attribute name="value" for="registrationCloseDate" expr="eval: null" />
 	</action-attrs>
 
-	<action-validate name="action-event-management-validate-event-registration">
-		<error message="Total number of registration is exceeds capacity of the event" if="capacity &lt; eventRegistrationList.size()" />
-	</action-validate>
+<!-- 	<action-validate name="action-event-management-validate-event-registration"> -->
+<!-- 		<error message="Total number of registration is exceeds capacity of the event" if="capacity &lt; eventRegistrationList.size()" /> -->
+<!-- 	</action-validate> -->
 
 	<action-group name="action-event-management-group-count-entry">
 		<action name="action-event-management-method-set-event-registrations" />

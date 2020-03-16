@@ -2,83 +2,92 @@
 <object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/object-views
   http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-  <grid model="com.axelor.apps.event.management.db.EventRegistration" title="Event Registration" name="forevent-event-registration-grid">
-    <field name="name" />
-    <field name="email" />
-    <field name="address" />
-    <field name="registrationDateT" />
-    <field name="amount" />
-    <field name="isEmailSent" />
-  </grid>
+	<grid model="com.axelor.apps.event.management.db.EventRegistration" title="Event Registration" name="forevent-event-registration-grid">
+		<field name="name" />
+		<field name="email" />
+		<field name="address" />
+		<field name="registrationDateT" />
+		<field name="amount" />
+		<field name="isEmailSent" />
+	</grid>
 
-  <grid model="com.axelor.apps.event.management.db.EventRegistration" title="Event Registration" name="event-registration-grid">
-    <field name="event" />
-    <field name="name" />
-    <field name="email" />
-    <field name="address" />
-    <field name="registrationDateT" />
-    <field name="amount" />
-  </grid>
+	<grid model="com.axelor.apps.event.management.db.EventRegistration" title="Event Registration" name="event-registration-grid">
+		<field name="event" />
+		<field name="name" />
+		<field name="email" />
+		<field name="address" />
+		<field name="registrationDateT" />
+		<field name="amount" />
+	</grid>
 
-  <form model="com.axelor.apps.event.management.db.EventRegistration" title="Event Registration" name="forevent-event-registration-form" onNew="action-event-management-validation-by-parent-data">
-    <panel colSpan="12">
-      <field name="name" />
-      <field name="email" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$" />
-      <field name="address" />
-      <field name="registrationDateT" onChange="action-event-management-validation-onchange-registration-date-for-event-form" />
-      <field name="amount" />
-    </panel>
-  </form>
+	<form model="com.axelor.apps.event.management.db.EventRegistration" title="Event Registration" name="forevent-event-registration-form" onNew="action-event-management-validation-by-parent-data">
+		<panel colSpan="12">
+			<field name="name" />
+			<field name="email" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$" />
+			<field name="address" />
+			<field name="registrationDateT" onChange="action-event-management-validation-onchange-registration-date-for-event-form,action-event-management-method-by-event-data" />
+			<field name="amount" />
+		</panel>
+	</form>
 
-  <form model="com.axelor.apps.event.management.db.EventRegistration" title="Event Registration" name="event-registration-form" onNew="action-event-management-attrs-init-data">
-    <panel colSpan="12">
-      <field name="event" onChange="action-event-management-validation-by-event-data,action-event-management-method-by-event-data" />
-      <field name="name" />
-      <field name="email" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$" />
-      <field name="address" />
-      <field name="registrationDateT" onChange="action-event-management-validation-onchange-registration-date" />
-      <field name="amount" />
-    </panel>
-  </form>
+	<form model="com.axelor.apps.event.management.db.EventRegistration" title="Event Registration" name="event-registration-form" onNew="action-event-management-attrs-init-data" onSave="action-event-management-validation-by-event-data-onsave,action-event-management-method-calculate-total-for-event">
+		<panel colSpan="12">
+			<field name="event" onChange="action-event-management-validation-by-event-data,action-event-management-method-by-event-data" />
+			<field name="name" />
+			<field name="email" placeholder="whatever@example.com" pattern="^[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+(?:\.[a-z0-9A-ZáàâäãåçéèêëíìîïñóòôöõúùûüýÿæœÁÀÂÄÃÅÇÉÈÊËÍÌÎÏÑÓÒÔÖÕÚÙÛÜÝŸÆŒ!#$%&amp;'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+(?:[a-z]{2,})$" />
+			<field name="address" />
+			<field name="registrationDateT" onChange="action-event-management-validation-onchange-registration-date,action-event-management-method-by-event-data" />
+			<field name="amount" />
+		</panel>
+	</form>
 
-  <action-method name="action-event-management-method-by-event-data">
-    <call class="com.axelor.apps.event.management.web.EventRegistrationController" method="setAmount"/>
-  </action-method>
+	<action-method name="action-event-management-method-by-event-data">
+		<call class="com.axelor.apps.event.management.web.EventRegistrationController" method="setAmount" />
+	</action-method>
 
-  <action-attrs name="action-event-management-attrs-init-data">
-    <attribute name="value" for="registrationDateT" expr="eval: __datetime__"/>
-  </action-attrs>
+	<action-attrs name="action-event-management-attrs-init-data">
+		<attribute name="value" for="registrationDateT" expr="eval: __datetime__" />
+	</action-attrs>
+	
+	<action-method name="action-event-management-method-calculate-total-for-event">
+		<call class="com.axelor.apps.event.management.web.EventRegistrationController" method="setEventCalculations"/>
+	</action-method>
 
-  <action-validate name="action-event-management-validation-by-event-data">
-    <error message="Please enter capacity first" if="event.capacity == 0" />
-    <error message="Please enter registration open and close date" if="event.registrationCloseDate == null || event.registrationOpenDate == null" />
-    <error message="Total number of registration is exceeds capacity of the event" if="event.capacity &lt; event.eventRegistrationList.size() || event.capacity == event.eventRegistrationList.size()" />
-    <error message="Registration is not opened yet" if="event.registrationOpenDate &gt; __date__ "  />
-    <error message="Registration is closed" if="event.registrationCloseDate &lt; __date__ || event.registrationCloseDate == __date__" />
-  </action-validate>
+	<action-validate name="action-event-management-validation-by-event-data">
+		<error message="Please enter capacity first" if="eval: __this__.event != null &amp;&amp; __this__.event.capacity == 0" />
+		<error message="Please enter registration open and close date" if="eval: __this__.event != null &amp;&amp; (__this__.event.registrationCloseDate == null || __this__.event.registrationOpenDate == null)" />
 
-  <action-validate name="action-event-management-validation-by-parent-data">
-    <error message="Please enter capacity first" if="__parent__.capacity == 0" action="action-event-management-method-not-allow-to-save" />
-    <error message="Please enter registration open and close date" if="__parent__.registrationCloseDate == null || __parent__.registrationOpenDate == null" action="action-event-management-method-not-allow-to-save" />
-    <error message="Total number of registration is exceeds capacity of the event" if="__parent__.capacity &lt; __parent__.eventRegistrationList.size() || __parent__.capacity == __parent__.eventRegistrationList.size()" action="action-event-management-method-not-allow-to-save" />
-    <error message="Registration is not opened yet" if="__parent__.registrationOpenDate &gt; __date__ " action="action-event-management-method-not-allow-to-save" />
-    <error message="Registration is closed" if="__parent__.registrationCloseDate &lt; __date__ || __parent__.registrationCloseDate == __date__" action="action-event-management-method-not-allow-to-save" />
-  </action-validate>
+		<!-- <error message="Total number of registration is exceeds capacity of the event" if="__self__.id != null &amp;&amp; event.capacity &lt; event.eventRegistrationList.size()" /> -->
+		<error message="Registration is not opened yet" if="eval: __this__.event != null &amp;&amp; __this__.event.registrationOpenDate &gt; registrationDateT.toLocalDate() " />
+		<error message="Registration is closed" if="eval: __this__.event != null &amp;&amp; __this__.event.registrationCloseDate &lt; registrationDateT.toLocalDate()" />
+	</action-validate>
 
-  <action-validate name="action-event-management-validation-onchange-registration-date">
-    <error message="Registration should be in between registration open and close date" if="event.registrationOpenDate &gt; registrationDateT.toLocalDate() || event.registrationCloseDate &lt; registrationDateT.toLocalDate()" action="action-event-management-attrs-clear-registration-date-field" />
-  </action-validate>
+	<action-validate name="action-event-management-validation-by-event-data-onsave">
+		<error message="Total number of registration is exceeds capacity of the event" if="__this__.event.capacity &lt; __this__.event.eventRegistrationList.size() || __this__.event.capacity == __this__.event.eventRegistrationList.size()" />
+	</action-validate>
 
-  <action-validate name="action-event-management-validation-onchange-registration-date-for-event-form">
-    <error message="Registration should be in between registration open and close date" if="__parent__.registrationOpenDate &gt; registrationDateT.toLocalDate() || __parent__.registrationCloseDate &lt; registrationDateT.toLocalDate()" action="action-event-management-attrs-clear-registration-date-field" />
-  </action-validate>
+	<action-validate name="action-event-management-validation-by-parent-data">
+		<error message="Please enter capacity first" if="__parent__.capacity == 0" action="action-event-management-method-not-allow-to-save" />
+		<error message="Please enter registration open and close date" if="__parent__.registrationCloseDate == null || __parent__.registrationOpenDate == null" action="action-event-management-method-not-allow-to-save" />
+		<error message="Total number of registration is exceeds capacity of the event" if="__parent__.capacity &lt; __parent__.eventRegistrationList.size() || __parent__.capacity == __parent__.eventRegistrationList.size()" action="action-event-management-method-not-allow-to-save" />
+		<error message="Registration is not opened yet" if="registrationDateT != null &amp;&amp; __parent__.registrationOpenDate &gt; registrationDateT.toLocalDate() " action="action-event-management-attrs-clear-registration-date-field" />
+		<error message="Registration is closed" if="registrationDateT != null &amp;&amp; (__parent__.registrationCloseDate &lt; registrationDateT.toLocalDate() || __parent__.registrationCloseDate == registrationDateT.toLocalDate())" action="action-event-management-attrs-clear-registration-date-field" />
+	</action-validate>
 
-  <action-method name="action-event-management-method-not-allow-to-save">
-    <call class="com.axelor.apps.event.management.web.EventRegistrationController" method="closeForm" />
-  </action-method>
+	<action-validate name="action-event-management-validation-onchange-registration-date">
+		<error message="Registration should be in between registration open and close date" if="event != null &amp;&amp; (event.registrationOpenDate &gt; registrationDateT.toLocalDate() || event.registrationCloseDate &lt; registrationDateT.toLocalDate())" action="action-event-management-attrs-clear-registration-date-field" />
+	</action-validate>
 
-  <action-attrs name="action-event-management-attrs-clear-registration-date-field">
-    <attribute name="value" for="registrationDateT" expr="eval: null" />
-  </action-attrs>
+	<action-validate name="action-event-management-validation-onchange-registration-date-for-event-form">
+		<error message="Registration should be in between registration open and close date" if="__parent__.registrationOpenDate &gt; registrationDateT.toLocalDate() || __parent__.registrationCloseDate &lt; registrationDateT.toLocalDate()" action="action-event-management-attrs-clear-registration-date-field" />
+	</action-validate>
+
+	<action-method name="action-event-management-method-not-allow-to-save">
+		<call class="com.axelor.apps.event.management.web.EventRegistrationController" method="closeForm" />
+	</action-method>
+
+	<action-attrs name="action-event-management-attrs-clear-registration-date-field">
+		<attribute name="value" for="registrationDateT" expr="eval: null" />
+	</action-attrs>
 
 </object-views>
