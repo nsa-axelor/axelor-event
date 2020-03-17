@@ -8,11 +8,13 @@ import java.util.Map;
 import com.axelor.apps.event.management.db.Discount;
 import com.axelor.apps.event.management.db.Event;
 import com.axelor.apps.event.management.db.EventRegistration;
+import com.axelor.apps.event.management.error.IErrorMessage;
 import com.axelor.apps.event.management.service.EventService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
 import com.axelor.exception.service.TraceBackService;
+import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
 import com.axelor.meta.db.MetaFile;
 import com.axelor.meta.db.repo.MetaFileRepository;
@@ -80,7 +82,8 @@ public class EventController {
 				Beans.get(EventService.class).importDataFromCsvFile(metaFile, eventId);
 				response.setFlash("Data imported !");
 			} else {
-				response.setError("Only csv file is allowed");
+				//I18n.get()
+				response.setError(I18n.get(IErrorMessage.CSV_EXTENSION_ERROR));
 			}
 			response.setCanClose(true);
 		} catch (Exception e) {

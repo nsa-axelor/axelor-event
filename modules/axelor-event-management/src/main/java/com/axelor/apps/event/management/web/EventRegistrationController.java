@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import com.axelor.apps.event.management.db.Event;
 import com.axelor.apps.event.management.db.EventRegistration;
 import com.axelor.apps.event.management.service.EventRegistrationService;
+import com.axelor.exception.service.TraceBackService;
 import com.axelor.inject.Beans;
 import com.axelor.rpc.ActionRequest;
 import com.axelor.rpc.ActionResponse;
@@ -15,7 +16,7 @@ public class EventRegistrationController {
 		try {
 			response.setCanClose(true);
 		} catch (Exception e) {
-			e.printStackTrace();
+			TraceBackService.trace(e);
 		}
 	}
 
@@ -25,7 +26,7 @@ public class EventRegistrationController {
 			BigDecimal amount = Beans.get(EventRegistrationService.class).calculateAmount(eventRegistration);
 			response.setValue("amount", amount);
 		} catch (Exception e) {
-			e.printStackTrace();
+			TraceBackService.trace(e);
 		}
 	}
 
@@ -35,7 +36,7 @@ public class EventRegistrationController {
 			Event event = eventRegistration.getEvent();
 			Beans.get(EventRegistrationService.class).saveEventTotalCalculations(event, eventRegistration);
 		} catch (Exception e) {
-			e.printStackTrace();
+			TraceBackService.trace(e);
 		}
 	}
 }
