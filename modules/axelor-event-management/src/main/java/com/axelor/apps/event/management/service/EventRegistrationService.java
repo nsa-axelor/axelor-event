@@ -8,4 +8,6 @@ public interface EventRegistrationService {
 	public BigDecimal calculateAmount(EventRegistration registration);
 
 	public void saveEventTotalCalculations(Event event, EventRegistration registration);
+
+	public void saveEventRegistration(EventRegistration eventRegistration);
 }

@@ -8,6 +8,7 @@ import com.axelor.apps.event.management.db.Discount;
 import com.axelor.apps.event.management.db.Event;
 import com.axelor.apps.event.management.db.EventRegistration;
 import com.axelor.apps.event.management.db.repo.DiscountRepository;
+import com.axelor.apps.event.management.db.repo.EventRegistrationRepository;
 import com.axelor.apps.event.management.db.repo.EventRepository;
 import com.axelor.inject.Beans;
 import com.google.inject.Inject;
@@ -65,6 +66,12 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
 		event.setTotalDiscount(totalDiscount);
 		event.setAmountCollected(amountCollected);
 		Beans.get(EventRepository.class).save(event);
+	}
+
+	@Transactional
+	@Override
+	public void saveEventRegistration(EventRegistration eventRegistration) {
+		Beans.get(EventRegistrationRepository.class).save(eventRegistration);
 	}
 
 }

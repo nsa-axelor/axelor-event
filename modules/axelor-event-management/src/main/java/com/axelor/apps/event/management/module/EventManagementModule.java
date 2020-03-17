@@ -7,9 +7,9 @@ import com.axelor.apps.event.management.service.EventService;
 import com.axelor.apps.event.management.service.EventServiceImpl;
 
 public class EventManagementModule extends AxelorModule {
-  @Override
-  protected void configure() {
-    bind(EventService.class).to(EventServiceImpl.class);
-    bind(EventRegistrationService.class).to(EventRegistrationServiceImpl.class);
-  }
+	@Override
+	protected void configure() {
+		bind(EventService.class).to(EventServiceImpl.class);
+		bind(EventRegistrationService.class).to(EventRegistrationServiceImpl.class);
+	}
 }

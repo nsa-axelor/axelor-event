@@ -1,29 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<object-views xmlns="http://axelor.com/xml/ns/object-views"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://axelor.com/xml/ns/object-views
+<object-views xmlns="http://axelor.com/xml/ns/object-views" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/object-views
   http://axelor.com/xml/ns/object-views/object-views_5.2.xsd">
 
-  <menuitem title="Event Management" name="event-management-root"/>
+	<menuitem title="Event Management" name="event-management-root" />
 
-  <menuitem title="Event" name="event-management-root-event" parent="event-management-root" action="action.event.management.view.event"/>
-  <action-view name="action.event.management.view.event" title="Event" model="com.axelor.apps.event.management.db.Event">
-    <view type="grid" name="event-grid"/>
-    <view type="form" name="event-form"/>
-    <view type="cards" name="event-cards"/>
-    <view type="calendar" name="event-calander"/>
-  </action-view>
+	<menuitem title="Event" name="event-management-root-event" parent="event-management-root" action="action.event.management.view.event" />
+	<action-view name="action.event.management.view.event" title="Event" model="com.axelor.apps.event.management.db.Event">
+		<view type="grid" name="event-grid" />
+		<view type="form" name="event-form" />
+		<view type="cards" name="event-cards" />
+		<view type="calendar" name="event-calander" />
+	</action-view>
 
-  <menuitem title="Event Registration" name="event-management-root-event-registration" parent="event-management-root" action="action.event.management.view.event.registration"/>
-  <action-view name="action.event.management.view.event.registration" title="Event Registration" model="com.axelor.apps.event.management.db.EventRegistration">
-    <view type="grid" name="event-registration-grid"/>
-    <view type="form" name="event-registration-form"/>
-  </action-view>
+	<menuitem title="Event Registration" name="event-management-root-event-registration" parent="event-management-root" action="action.event.management.view.event.registration" />
+	<action-view name="action.event.management.view.event.registration" title="Event Registration" model="com.axelor.apps.event.management.db.EventRegistration">
+		<view type="grid" name="event-registration-grid" />
+		<view type="form" name="event-registration-form" />
+	</action-view>
 
-  <menuitem title="Address" name="event-management-root-address" parent="event-management-root" action="action.event.management.view.address"/>
-  <action-view name="action.event.management.view.address" title="Address" model="com.axelor.apps.event.management.db.Address">
-    <view type="grid" name="address-grid"/>
-    <view type="form" name="address-form"/>
-  </action-view>
+	<menuitem title="Address" name="event-management-root-address" parent="event-management-root" action="action.event.management.view.address" />
+	<action-view name="action.event.management.view.address" title="Address" model="com.axelor.apps.event.management.db.Address">
+		<view type="grid" name="address-grid" />
+		<view type="form" name="address-form" />
+	</action-view>
 
 </object-views>

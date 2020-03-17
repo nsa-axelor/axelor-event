@@ -1,16 +1,16 @@
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models
   http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
-  <module package="com.axelor.apps.event.management.db" name="event-management" />
+	<module package="com.axelor.apps.event.management.db" name="event-management" />
 
-  <entity name="EventRegistration">
-    <many-to-one name="event" ref="com.axelor.apps.event.management.db.Event" title="Event"/>
-    <string name="name" title="Name" />
-    <string name="email" />
-    <many-to-one name="address" ref="com.axelor.apps.event.management.db.Address" title="Address"/>
-    <datetime name="registrationDateT" title="Registration Date"/>
-    <decimal name="amount" readonly="true" title="Amount"/>
-    <boolean name="isEmailSent" title="Email Sent" default="false"/>
-  </entity>
+	<entity name="EventRegistration">
+		<many-to-one name="event" ref="com.axelor.apps.event.management.db.Event" title="Event" />
+		<string name="name" title="Name" />
+		<string name="email" />
+		<many-to-one name="address" ref="com.axelor.apps.event.management.db.Address" title="Address" />
+		<datetime name="registrationDateT" title="Registration Date" />
+		<decimal name="amount" readonly="true" title="Amount" />
+		<boolean name="isEmailSent" title="Email Sent" default="false" />
+	</entity>
 
 </domain-models>

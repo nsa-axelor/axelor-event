@@ -1,9 +1,17 @@
 package com.axelor.apps.event.management.service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.io.IOUtils;
 
 import com.axelor.apps.event.management.db.Discount;
 import com.axelor.apps.event.management.db.Event;
@@ -15,7 +23,13 @@ import com.axelor.apps.message.db.EmailAddress;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.EmailAccountRepository;
 import com.axelor.apps.message.db.repo.MessageRepository;
+import com.axelor.data.ImportTask;
+import com.axelor.data.csv.CSVImporter;
 import com.axelor.inject.Beans;
+import com.axelor.meta.MetaFiles;
+import com.axelor.meta.db.MetaFile;
+import com.axelor.meta.db.repo.MetaFileRepository;
+import com.google.common.io.Files;
 import com.google.inject.persist.Transactional;
 
 public class EventServiceImpl implements EventService {
@@ -51,12 +65,6 @@ public class EventServiceImpl implements EventService {
 			return this.removeLastLine(eventRegistrations);
 		}
 		return eventRegistrations;
-	}
-
-	@Override
-	public List<EventRegistration> validateEventRegistrations(Event event) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	@Override
@@ -122,10 +130,7 @@ public class EventServiceImpl implements EventService {
 			eventRegistration = Beans.get(EventRegistrationRepository.class).find(eventRegistration.getId());
 			eventRegistration.setIsEmailSent(true);
 			Beans.get(EventRegistrationRepository.class).save(eventRegistration);
-			// TODO: create save method in service
 		}
-
-//		message.setTemplate(template);
 
 		message.addCcEmailAddressSetItem(address);
 		message.addBccEmailAddressSetItem(address);
@@ -136,11 +141,74 @@ public class EventServiceImpl implements EventService {
 		message.setSentByEmail(true);
 		return message;
 	}
-	
+
 	@Override
-	public boolean areAllMailSent(List<EventRegistration> eventRegistrations){
-	    for(EventRegistration eventRegistration : eventRegistrations) if(!eventRegistration.getIsEmailSent()) return false;
-	    return true;
+	public boolean areAllMailSent(List<EventRegistration> eventRegistrations) {
+		for (EventRegistration eventRegistration : eventRegistrations)
+			if (!eventRegistration.getIsEmailSent())
+				return false;
+		return true;
+	}
+
+	@Override
+	public void importDataFromCsvFile(MetaFile metaFile, Long eventId) {
+
+		this.getCsvFile(metaFile);
+		String configFilePath = this.getConfigFile().getAbsolutePath();
+		System.err.println(configFilePath);
+		String csvFilePath = this.getCsvFilePath(metaFile);
+		CSVImporter importer = new CSVImporter(configFilePath);
+		Map<String, Object> context = new HashMap<String, Object>();
+		context.put("event", eventId);
+		importer.setContext(context);
+		importer.run(new ImportTask() {
+
+			@Override
+			public void configure() throws IOException {
+				input("event.csv", new File(csvFilePath));
+			}
+		});
+		deleteFile(metaFile);
+	}
+
+	@Transactional
+	public void deleteFile(MetaFile metaFile) {
+		Beans.get(MetaFileRepository.class).remove(metaFile);
+		File tmpDir = Files.createTempDir();
+		File csvFile = new File(tmpDir.getPath() + "event.csv");
+		File meta = MetaFiles.getPath(metaFile).toFile();
+		meta.delete();
+		csvFile.delete();
+	}
+
+	public File getConfigFile() {
+		File importConfigFile = null;
+		try {
+			importConfigFile = File.createTempFile("csv-config", ".xml");
+			InputStream is = this.getClass().getResourceAsStream("/data-demo/input-config2.xml");
+			FileOutputStream os = new FileOutputStream(importConfigFile);
+			IOUtils.copy(is, os);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return importConfigFile;
+	}
+
+	public File getCsvFile(MetaFile metaFile) {
+		File csvFile = null;
+		try {
+			File tempDir = Files.createTempDir();
+			csvFile = new File(tempDir, "event.csv");
+			Files.copy(MetaFiles.getPath(metaFile).toFile(), csvFile);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return csvFile;
+	}
+
+	public String getCsvFilePath(MetaFile metaFile) {
+		String path = MetaFiles.getPath(metaFile).toString();
+		return path;
 	}
 
 }

@@ -1,15 +1,15 @@
 <domain-models xmlns="http://axelor.com/xml/ns/domain-models" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://axelor.com/xml/ns/domain-models
   http://axelor.com/xml/ns/domain-models/domain-models_5.2.xsd">
 
-  <module package="com.axelor.apps.event.management.db" name="event-management" />
+	<module package="com.axelor.apps.event.management.db" name="event-management" />
 
-  <entity name="Address">
-    <string name="houseNo" title="Flat/House No."/>
-    <string name="street" title="Street" />
-    <string name="landMark" title="Land Mark" />
-    <string name="city" title="City"/>
-    <string name="country" title="Country" />
-    <string name="fullName" namecolumn="true" search="houseNo,street,landMark,city,country" readonly="true">
+	<entity name="Address">
+		<string name="houseNo" title="Flat/House No." />
+		<string name="street" title="Street" />
+		<string name="landMark" title="Land Mark" />
+		<string name="city" title="City" />
+		<string name="country" title="Country" />
+		<string name="fullName" namecolumn="true" search="houseNo,street,landMark,city,country" readonly="true">
       <![CDATA[
         if(houseNo == null && street == null)
           return null;
@@ -26,7 +26,7 @@
 
         return houseNo + " " + street + " " + landMark + " " + city + " " + country;
       ]]>
-     </string>
-  </entity>
+		</string>
+	</entity>
 
-  </domain-models>
+</domain-models>

@@ -33,11 +33,11 @@
 			<field name="registrationOpenDate" onChange="action-event-management-validate-onchange-registration-open-date" />
 			<field name="registrationCloseDate" onChange="action-event-management-validate-onchange-registration-close-date" />
 			<field name="capacity" />
-			<field name="eventFees" onChange="action-event-management-method-set-discount-values"/>
+			<field name="eventFees" onChange="action-event-management-method-set-discount-values" />
 			<field name="description" widget="html" colSpan="12" />
 			<field name="discountList" colSpan="12" onChange="save" />
 			<field name="eventRegistrationList" colSpan="12" form-view="forevent-event-registration-form" grid-view="forevent-event-registration-grid" onChange="action-event-management-group-count-entry" />
-			
+
 		</panel>
 		<panel sidebar="true">
 			<field name="totalEntry" colSpan="12" />
@@ -48,13 +48,13 @@
 
 	<form model="com.axelor.apps.event.management.db.Event" title="Upload File" name="upload-file-form">
 		<panel colSpan="12">
-			<field name="fileUpload" widget="binary-link" type="many-to-one" x-target="com.axelor.meta.db.MetaFile" title="Upload File"/>
-			<button name="importBtn" title="Import" onClick="action-event-management-method-import-data"/>
+			<field name="fileUpload" widget="binary-link" type="many-to-one" x-target="com.axelor.meta.db.MetaFile" title="Upload File" />
+			<button name="importBtn" title="Import" onClick="action-event-management-method-import-data" />
 		</panel>
 	</form>
-	
+
 	<action-method name="action-event-management-method-set-discount-values">
-		<call class="com.axelor.apps.event.management.web.EventController" method="setDiscounts"/>
+		<call class="com.axelor.apps.event.management.web.EventController" method="setDiscounts" />
 	</action-method>
 
 	<action-view name="action-action-event-management-view-import-open-wizard" model="com.axelor.apps.event.management.db.Event" title="Import File">
@@ -65,9 +65,9 @@
 		<view-param name="popup-save" value="true" />
 		<view-param name="forceEdit" value="true" />
 	</action-view>
-	
+
 	<action-method name="action-event-management-method-import-data">
-		<call class="com.axelor.apps.event.management.web.EventController" method="importData"/>
+		<call class="com.axelor.apps.event.management.web.EventController" method="importData" />
 	</action-method>
 
 	<action-method name="action-event-management-method-send-mail">
@@ -108,10 +108,6 @@
 	<action-attrs name="action-event-management-attrs-clear-registration-close-date-field">
 		<attribute name="value" for="registrationCloseDate" expr="eval: null" />
 	</action-attrs>
-
-<!-- 	<action-validate name="action-event-management-validate-event-registration"> -->
-<!-- 		<error message="Total number of registration is exceeds capacity of the event" if="capacity &lt; eventRegistrationList.size()" /> -->
-<!-- 	</action-validate> -->
 
 	<action-group name="action-event-management-group-count-entry">
 		<action name="action-event-management-method-set-event-registrations" />

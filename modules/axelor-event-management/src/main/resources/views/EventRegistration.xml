@@ -48,16 +48,14 @@
 	<action-attrs name="action-event-management-attrs-init-data">
 		<attribute name="value" for="registrationDateT" expr="eval: __datetime__" />
 	</action-attrs>
-	
+
 	<action-method name="action-event-management-method-calculate-total-for-event">
-		<call class="com.axelor.apps.event.management.web.EventRegistrationController" method="setEventCalculations"/>
+		<call class="com.axelor.apps.event.management.web.EventRegistrationController" method="setEventCalculations" />
 	</action-method>
 
 	<action-validate name="action-event-management-validation-by-event-data">
 		<error message="Please enter capacity first" if="eval: __this__.event != null &amp;&amp; __this__.event.capacity == 0" />
 		<error message="Please enter registration open and close date" if="eval: __this__.event != null &amp;&amp; (__this__.event.registrationCloseDate == null || __this__.event.registrationOpenDate == null)" />
-
-		<!-- <error message="Total number of registration is exceeds capacity of the event" if="__self__.id != null &amp;&amp; event.capacity &lt; event.eventRegistrationList.size()" /> -->
 		<error message="Registration is not opened yet" if="eval: __this__.event != null &amp;&amp; __this__.event.registrationOpenDate &gt; registrationDateT.toLocalDate() " />
 		<error message="Registration is closed" if="eval: __this__.event != null &amp;&amp; __this__.event.registrationCloseDate &lt; registrationDateT.toLocalDate()" />
 	</action-validate>
