@@ -5,7 +5,7 @@ import com.axelor.apps.event.management.db.EventRegistration;
 import java.math.BigDecimal;
 
 public interface EventRegistrationService {
-	public BigDecimal calculateAmount(EventRegistration registration);
+	public BigDecimal calculateAmount(EventRegistration registration, Event event);
 
 	public void saveEventTotalCalculations(Event event, EventRegistration registration);
 

@@ -440,7 +440,7 @@
             </list-property>
             <xml-property name="queryText"><![CDATA[select management_event.*, management_address.full_name as address
 from management_event 
-inner join management_address
+left join management_address
 on management_event.venue = management_address.id
 where management_event.id = ?]]></xml-property>
             <xml-property name="designerValues"><![CDATA[<?xml version="1.0" encoding="UTF-8"?>

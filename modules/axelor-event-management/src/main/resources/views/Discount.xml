@@ -17,7 +17,7 @@
 	</form>
 
 	<action-validate name="action-event-management-validate-check-exceedance-by-registration-peroid">
-		<error message="Before days are exceeded of days of registration period" if="java.time.temporal.ChronoUnit.DAYS.between(__parent__.registrationOpenDate, __parent__.registrationCloseDate) &lt; beforeDays" action="action-event-management-attrs-clear-before-days" />
+		<error message="Before days are exceeded of days of registration period" if="__parent__.registrationOpenDate != null &amp;&amp; java.time.temporal.ChronoUnit.DAYS.between(__parent__.registrationOpenDate, __parent__.registrationCloseDate) &lt; beforeDays" action="action-event-management-attrs-clear-before-days" />
 		<error message="Before days could not be less than 0." if="beforeDays &lt; 0" action="action-event-management-attrs-clear-before-days" />
 	</action-validate>
 

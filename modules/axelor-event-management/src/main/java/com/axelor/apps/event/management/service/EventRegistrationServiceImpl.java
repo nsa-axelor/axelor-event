@@ -20,35 +20,42 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
 	EventService eventService;
 
 	@Override
-	public BigDecimal calculateAmount(EventRegistration eventRegistration) {
-		Event event = eventRegistration.getEvent();
+	public BigDecimal calculateAmount(EventRegistration eventRegistration, Event event) {
+		Event mappedEvent = eventRegistration.getEvent();
+		if (mappedEvent == null && event == null)
+			return BigDecimal.ZERO;
+		else if (mappedEvent == null)
+			mappedEvent = event;
 
 		List<Discount> discountList = Beans.get(DiscountRepository.class).all().filter("self.event = :event")
-				.bind("event", event.getId()).order("-discountPercent").fetch();
+				.bind("event", mappedEvent.getId()).order("-discountPercent").fetch();
 
 		if (discountList.size() > 0 && discountList != null) {
 			Discount discount = discountList.get(0);
 
+			if (eventRegistration.getRegistrationDateT() == null)
+				return BigDecimal.ZERO;
 			LocalDate registrationDate = eventRegistration.getRegistrationDateT().toLocalDate();
-			LocalDate offerLastDate = event.getRegistrationCloseDate().minusDays(discount.getBeforeDays().longValue());
+			LocalDate offerLastDate = mappedEvent.getRegistrationCloseDate()
+					.minusDays(discount.getBeforeDays().longValue());
 
 			for (int i = 0; i < discountList.size(); i++) {
 				discount = discountList.get(i);
-				offerLastDate = event.getRegistrationCloseDate().minusDays(discount.getBeforeDays().longValue());
+				offerLastDate = mappedEvent.getRegistrationCloseDate().minusDays(discount.getBeforeDays().longValue());
 				if (eventService.countDays(registrationDate, offerLastDate) >= 0)
 					break;
 			}
 
 			if (eventService.countDays(registrationDate, offerLastDate) >= 0) {
-				BigDecimal eventFees = event.getEventFees();
+				BigDecimal eventFees = mappedEvent.getEventFees();
 				BigDecimal discountAmount = discount.getDiscountAmount();
 				BigDecimal offerAppliedAmount = eventFees.subtract(discountAmount);
 				return offerAppliedAmount;
 			} else {
-				return event.getEventFees();
+				return mappedEvent.getEventFees();
 			}
 		} else {
-			return event.getEventFees();
+			return mappedEvent.getEventFees();
 		}
 	}
 
@@ -59,8 +66,10 @@ public class EventRegistrationServiceImpl implements EventRegistrationService {
 		BigDecimal totalDiscount = event.getTotalDiscount();
 		BigDecimal amountCollected = event.getAmountCollected();
 		BigDecimal amountToAdd = registration.getAmount();
-		if (!event.getEventFees().equals(amountToAdd)) {
-			totalDiscount = totalDiscount.add(event.getEventFees().subtract(amountToAdd));
+		if (!amountToAdd.equals(BigDecimal.ZERO)) {
+			if (!event.getEventFees().equals(amountToAdd)) {
+				totalDiscount = totalDiscount.add(event.getEventFees().subtract(amountToAdd));
+			}
 		}
 		amountCollected = amountCollected.add(amountToAdd);
 		event.setTotalDiscount(totalDiscount);

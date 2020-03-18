@@ -23,7 +23,17 @@ public class EventRegistrationController {
 	public void setAmount(ActionRequest request, ActionResponse response) {
 		try {
 			EventRegistration eventRegistration = request.getContext().asType(EventRegistration.class);
-			BigDecimal amount = Beans.get(EventRegistrationService.class).calculateAmount(eventRegistration);
+			Event event = null;
+			try {
+				if (request.getContext().getParent().asType(Event.class) != null) {
+					event = request.getContext().getParent().asType(Event.class);
+				}
+			} catch (Exception e) {
+			}
+			BigDecimal amount = BigDecimal.ZERO;
+			if (eventRegistration.getRegistrationDateT() != null) {
+				amount = Beans.get(EventRegistrationService.class).calculateAmount(eventRegistration, event);
+			}
 			response.setValue("amount", amount);
 		} catch (Exception e) {
 			TraceBackService.trace(e);

@@ -40,6 +40,7 @@ public class EventServiceImpl implements EventService {
 		BigDecimal totalDiscount = BigDecimal.ZERO;
 		for (EventRegistration er : eventRegistrations) {
 			amountCollected = amountCollected.add(er.getAmount());
+			if(!er.getAmount().equals(BigDecimal.ZERO))
 			totalDiscount = totalDiscount.add(event.getEventFees().subtract(er.getAmount()));
 		}
 		event.setAmountCollected(amountCollected);
@@ -57,7 +58,7 @@ public class EventServiceImpl implements EventService {
 	public List<EventRegistration> removeLastLineByValidations(Event event) {
 		List<EventRegistration> eventRegistrations = event.getEventRegistrationList();
 		try {
-			if (event.getCapacity() < eventRegistrations.size() || event.getRegistrationCloseDate() == null
+			if (event.getRegistrationCloseDate() == null
 					|| event.getRegistrationOpenDate() == null) {
 				return this.removeLastLine(eventRegistrations);
 			}
@@ -73,39 +74,77 @@ public class EventServiceImpl implements EventService {
 	}
 
 	@Override
-	public List<EventRegistration> lastModifiedEventRegistrationList(Event event) {
+	public List<EventRegistration> getCalculatedEventRegistrationList(Event event) {
 		List<Discount> discountList = Beans.get(DiscountRepository.class).all().filter("self.event = :event")
 				.bind("event", event.getId()).order("-discountPercent").fetch();
 		List<EventRegistration> eventRegistrations = event.getEventRegistrationList();
-		EventRegistration eventRegistration = eventRegistrations.get(eventRegistrations.size() - 1);
+		
+		for(int i = 0; i < eventRegistrations.size(); i++){
+			
+			EventRegistration reg = eventRegistrations.get(i);
+			
+			if (discountList.size() > 0 && discountList != null) {
+				Discount discount = discountList.get(0);
+				if (reg.getRegistrationDateT() == null) {
+					eventRegistrations.set(i, reg);
+					continue;
+				}
+				LocalDate registrationDate = reg.getRegistrationDateT().toLocalDate();
+				LocalDate offerLastDate = event.getRegistrationCloseDate().minusDays(discount.getBeforeDays().longValue());
 
-		if (discountList.size() > 0 && discountList != null) {
-			Discount discount = discountList.get(0);
-			LocalDate registrationDate = eventRegistration.getRegistrationDateT().toLocalDate();
-			LocalDate offerLastDate = event.getRegistrationCloseDate().minusDays(discount.getBeforeDays().longValue());
+				for (int j = 0; j < discountList.size(); j++) {
+					discount = discountList.get(j);
+					offerLastDate = event.getRegistrationCloseDate().minusDays(discount.getBeforeDays().longValue());
+					if (this.countDays(registrationDate, offerLastDate) >= 0)
+						break;
+				}
 
-			for (int i = 0; i < discountList.size(); i++) {
-				discount = discountList.get(i);
-				offerLastDate = event.getRegistrationCloseDate().minusDays(discount.getBeforeDays().longValue());
-				if (this.countDays(registrationDate, offerLastDate) >= 0)
-					break;
-			}
+				if (this.countDays(registrationDate, offerLastDate) >= 0) {
+					BigDecimal eventFees = event.getEventFees();
+					BigDecimal discountAmount = discount.getDiscountAmount();
+					BigDecimal offerAppliedAmount = eventFees.subtract(discountAmount);
+					reg.setAmount(offerAppliedAmount);
+					eventRegistrations.set(i, reg);
+				} else {
+					reg.setAmount(event.getEventFees());
+					eventRegistrations.set(i, reg);
+				}
 
-			if (this.countDays(registrationDate, offerLastDate) >= 0) {
-				BigDecimal eventFees = event.getEventFees();
-				BigDecimal discountAmount = discount.getDiscountAmount();
-				BigDecimal offerAppliedAmount = eventFees.subtract(discountAmount);
-				eventRegistration.setAmount(offerAppliedAmount);
-				eventRegistrations.set(eventRegistrations.size() - 1, eventRegistration);
 			} else {
-				eventRegistration.setAmount(event.getEventFees());
-				eventRegistrations.set(eventRegistrations.size() - 1, eventRegistration);
+				reg.setAmount(event.getEventFees());
+				eventRegistrations.set(i, reg);
 			}
-
-		} else {
-			eventRegistration.setAmount(event.getEventFees());
-			eventRegistrations.set(eventRegistrations.size() - 1, eventRegistration);
 		}
+		
+//		EventRegistration eventRegistration = eventRegistrations.get(eventRegistrations.size() - 1);
+//
+//		if (discountList.size() > 0 && discountList != null) {
+//			Discount discount = discountList.get(0);
+//			LocalDate registrationDate = eventRegistration.getRegistrationDateT().toLocalDate();
+//			LocalDate offerLastDate = event.getRegistrationCloseDate().minusDays(discount.getBeforeDays().longValue());
+//
+//			for (int i = 0; i < discountList.size(); i++) {
+//				discount = discountList.get(i);
+//				offerLastDate = event.getRegistrationCloseDate().minusDays(discount.getBeforeDays().longValue());
+//				if (this.countDays(registrationDate, offerLastDate) >= 0)
+//					break;
+//			}
+//
+//			if (this.countDays(registrationDate, offerLastDate) >= 0) {
+//				BigDecimal eventFees = event.getEventFees();
+//				BigDecimal discountAmount = discount.getDiscountAmount();
+//				BigDecimal offerAppliedAmount = eventFees.subtract(discountAmount);
+//				eventRegistration.setAmount(offerAppliedAmount);
+//				eventRegistrations.set(eventRegistrations.size() - 1, eventRegistration);
+//			} else {
+//				eventRegistration.setAmount(event.getEventFees());
+//				eventRegistrations.set(eventRegistrations.size() - 1, eventRegistration);
+//			}
+//
+//		} else {
+//			eventRegistration.setAmount(event.getEventFees());
+//			eventRegistrations.set(eventRegistrations.size() - 1, eventRegistration);
+//		}
 		return eventRegistrations;
 	}
 
@@ -155,7 +194,6 @@ public class EventServiceImpl implements EventService {
 
 		this.getCsvFile(metaFile);
 		String configFilePath = this.getConfigFile().getAbsolutePath();
-		System.err.println(configFilePath);
 		String csvFilePath = this.getCsvFilePath(metaFile);
 		CSVImporter importer = new CSVImporter(configFilePath);
 		Map<String, Object> context = new HashMap<String, Object>();

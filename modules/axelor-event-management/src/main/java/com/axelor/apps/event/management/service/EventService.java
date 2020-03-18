@@ -17,7 +17,7 @@ public interface EventService {
 
 	public long countDays(LocalDate startDate, LocalDate endDate);
 
-	public List<EventRegistration> lastModifiedEventRegistrationList(Event event);
+	public List<EventRegistration> getCalculatedEventRegistrationList(Event event);
 
 	public Message setUpMessage(Event event);
 

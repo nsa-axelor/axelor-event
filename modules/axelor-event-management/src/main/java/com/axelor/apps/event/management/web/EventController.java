@@ -13,6 +13,7 @@ import com.axelor.apps.event.management.service.EventService;
 import com.axelor.apps.message.db.Message;
 import com.axelor.apps.message.db.repo.MessageRepository;
 import com.axelor.apps.message.service.MessageService;
+import com.axelor.csv.script.ImportEventRegistration;
 import com.axelor.exception.service.TraceBackService;
 import com.axelor.i18n.I18n;
 import com.axelor.inject.Beans;
@@ -40,7 +41,7 @@ public class EventController {
 			EventService eventService = Beans.get(EventService.class);
 			List<EventRegistration> eventRegistrations = event.getEventRegistrationList();
 			if (eventRegistrations.size() > 0 && eventRegistrations != null) {
-				eventRegistrations = eventService.lastModifiedEventRegistrationList(event);
+				eventRegistrations = eventService.getCalculatedEventRegistrationList(event);
 				event = eventService.calculateTotal(event, eventRegistrations);
 				response.setValue("amountCollected", event.getAmountCollected());
 				response.setValue("totalDiscount", event.getTotalDiscount());
@@ -81,8 +82,8 @@ public class EventController {
 				MetaFile metaFile = Beans.get(MetaFileRepository.class).find(Long.parseLong(map.get("id").toString()));
 				Beans.get(EventService.class).importDataFromCsvFile(metaFile, eventId);
 				response.setFlash("Data imported !");
+				ImportEventRegistration.isCounterInitiated = false;
 			} else {
-				//I18n.get()
 				response.setError(I18n.get(IErrorMessage.CSV_EXTENSION_ERROR));
 			}
 			response.setCanClose(true);
@@ -95,10 +96,11 @@ public class EventController {
 		try {
 			Event event = request.getContext().asType(Event.class);
 			List<Discount> discountList = event.getDiscountList();
-			for (Discount discount : discountList) {
-				discount.setDiscountAmount(
-						event.getEventFees().multiply(discount.getDiscountPercent()).divide(new BigDecimal(100)));
-			}
+			if (discountList != null)
+				for (Discount discount : discountList) {
+					discount.setDiscountAmount(
+							event.getEventFees().multiply(discount.getDiscountPercent()).divide(new BigDecimal(100)));
+				}
 			response.setValue("discountList", discountList);
 		} catch (Exception e) {
 			TraceBackService.trace(e);
